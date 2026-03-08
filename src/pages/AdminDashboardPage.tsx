@@ -29,7 +29,6 @@ export const AdminDashboardPage: React.FC = () => {
   };
 
   const totalBlogs = publishedBlogs.length + draftBlogs.length;
-  const totalViews = 12800; // Placeholder
   const pendingDrafts = draftBlogs.length;
 
   return (

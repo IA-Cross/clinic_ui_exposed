@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { useBlogs } from '../context/BlogContext';
 import { format } from 'date-fns';
 import { BlogCard } from '../components/blog/BlogCard';
-import { LoadingSpinner } from '../components/common/LoadingSpinner';
 
 export const BlogPostPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

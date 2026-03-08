@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../common/Button';
 
 export const AdminHeader: React.FC = () => {
   const { user, logout } = useAuth();
