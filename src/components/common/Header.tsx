@@ -60,6 +60,9 @@ export const Header: React.FC = () => {
           </nav>
 
           <div className="flex items-center gap-4">
+            <Link to="/admin/login">
+              <Button variant="outline">Login</Button>
+            </Link>
             <Button variant="primary">Book Appointment</Button>
             <button
               className="md:hidden p-2"
@@ -109,6 +112,13 @@ export const Header: React.FC = () => {
             >
               Contact
             </a>
+            <Link
+              to="/admin/login"
+              className="text-sm font-semibold hover:text-primary transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Login
+            </Link>
           </nav>
         )}
       </div>
