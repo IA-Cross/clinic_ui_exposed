@@ -12,6 +12,16 @@ dist
 dist-ssr
 *.local
 
+# Environment variables (only .env.example is committed)
+.env
+.env.local
+.env.*.local
+
+# Client material (raw assets, processed copies live in src/assets)
+Verboonen-Odontología-material-web/
+Verboonen Odontología WEB.zip
+stitch_generated/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
