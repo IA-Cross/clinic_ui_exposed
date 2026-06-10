@@ -10,7 +10,7 @@ export const BlogGrid: React.FC<BlogGridProps> = ({ blogs }) => {
   if (blogs.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-slate-500 dark:text-slate-400">No blog posts found.</p>
+        <p className="text-slate-500 dark:text-slate-400">No se encontraron artículos.</p>
       </div>
     );
   }

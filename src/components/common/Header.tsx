@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from './Button';
+import logoColor from '../../assets/brand/logo-color.webp';
+
+const navLinks = [
+  { to: '/', label: 'Inicio', route: true },
+  { to: '/#servicios', label: 'Servicios', route: true },
+  { to: '/blog', label: 'Blog', route: true },
+  { to: '/#contacto', label: 'Contacto', route: true },
+];
 
 export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -8,64 +15,57 @@ export const Header: React.FC = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
+  const renderLink = (link: (typeof navLinks)[number], onClick?: () => void) =>
+    link.route ? (
+      <Link
+        key={link.label}
+        to={link.to}
+        onClick={onClick}
+        className={`text-sm font-semibold transition-colors ${
+          isActive(link.to) ? 'text-primary' : 'hover:text-primary'
+        }`}
+      >
+        {link.label}
+      </Link>
+    ) : (
+      <a
+        key={link.label}
+        href={link.to}
+        onClick={onClick}
+        className="text-sm font-semibold hover:text-primary transition-colors"
+      >
+        {link.label}
+      </a>
+    );
+
   return (
     <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="text-primary">
-              <span className="material-symbols-outlined text-4xl">dentistry</span>
-            </div>
-            <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
-              Clínica Odontológica<br />
-              <span className="text-primary">Láser Verboonen</span>
-            </h1>
+          <Link to="/" className="flex items-center">
+            <img
+              src={logoColor}
+              alt="Clínica Odontológica Verboonen"
+              width={600}
+              height={360}
+              className="h-14 w-auto"
+            />
           </Link>
-          
+
           <nav className="hidden md:flex items-center gap-8">
-            <Link
-              to="/"
-              className={`text-sm font-semibold transition-colors ${
-                isActive('/') ? 'text-primary' : 'hover:text-primary'
-              }`}
-            >
-              Home
-            </Link>
-            <a
-              href="#about"
-              className="text-sm font-semibold hover:text-primary transition-colors"
-            >
-              About
-            </a>
-            <a
-              href="#services"
-              className="text-sm font-semibold hover:text-primary transition-colors"
-            >
-              Services
-            </a>
-            <Link
-              to="/blog"
-              className={`text-sm font-semibold transition-colors ${
-                isActive('/blog') ? 'text-primary' : 'hover:text-primary'
-              }`}
-            >
-              Blog
-            </Link>
-            <a
-              href="#contact"
-              className="text-sm font-semibold hover:text-primary transition-colors"
-            >
-              Contact
-            </a>
+            {navLinks.map((link) => renderLink(link))}
           </nav>
 
           <div className="flex items-center gap-4">
-            <Link to="/admin/login">
-              <Button variant="outline">Login</Button>
+            <Link
+              to="/#contacto"
+              className="hidden sm:inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors"
+            >
+              Agenda tu Cita
             </Link>
-            <Button variant="primary">Book Appointment</Button>
             <button
               className="md:hidden p-2"
+              aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <span className="material-symbols-outlined">
@@ -77,47 +77,13 @@ export const Header: React.FC = () => {
 
         {mobileMenuOpen && (
           <nav className="md:hidden pb-4 flex flex-col gap-4">
+            {navLinks.map((link) => renderLink(link, () => setMobileMenuOpen(false)))}
             <Link
-              to="/"
-              className="text-sm font-semibold hover:text-primary transition-colors"
+              to="/#contacto"
               onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-semibold text-primary"
             >
-              Home
-            </Link>
-            <a
-              href="#about"
-              className="text-sm font-semibold hover:text-primary transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              About
-            </a>
-            <a
-              href="#services"
-              className="text-sm font-semibold hover:text-primary transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Services
-            </a>
-            <Link
-              to="/blog"
-              className="text-sm font-semibold hover:text-primary transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Blog
-            </Link>
-            <a
-              href="#contact"
-              className="text-sm font-semibold hover:text-primary transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Contact
-            </a>
-            <Link
-              to="/admin/login"
-              className="text-sm font-semibold hover:text-primary transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Login
+              Agenda tu Cita
             </Link>
           </nav>
         )}

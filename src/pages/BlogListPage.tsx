@@ -3,12 +3,13 @@ import { useBlogs } from '../context/BlogContext';
 import { BlogGrid } from '../components/blog/BlogGrid';
 import { CategoryFilter } from '../components/blog/CategoryFilter';
 import { Pagination } from '../components/blog/Pagination';
-import { NewsletterForm } from '../components/forms/NewsletterForm';
+import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { Seo } from '../components/common/Seo';
 
 const POSTS_PER_PAGE = 6;
 
 export const BlogListPage: React.FC = () => {
-  const { getPublishedBlogs } = useBlogs();
+  const { getPublishedBlogs, loading, error } = useBlogs();
   const allBlogs = getPublishedBlogs();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,25 +52,29 @@ export const BlogListPage: React.FC = () => {
 
   return (
     <main className="flex-1 max-w-7xl mx-auto w-full px-6 md:px-20 py-10">
-      {/* Hero Section for Blog */}
+      <Seo
+        title="Blog de Salud Dental"
+        description="Consejos, novedades y artículos sobre ortodoncia, odontología general y pediátrica, escritos por los especialistas de Clínica Verboonen."
+        path="/blog"
+      />
+
       <div className="mb-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-2xl">
             <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
               Actualidad Dental
             </span>
-            <h1 className="text-slate-900 dark:text-slate-100 text-4xl md:text-5xl font-black leading-tight tracking-tight">
-              Blog de Salud Dental Avanzada
+            <h1 className="text-slate-900 dark:text-slate-100 text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
+              Blog de Salud Dental
             </h1>
             <p className="mt-4 text-slate-600 dark:text-slate-400 text-lg">
-              Descubre las últimas innovaciones en odontología láser y el cuidado dental
-              especializado de la mano de expertos internacionales.
+              Consejos y novedades sobre el cuidado de tu sonrisa, de la mano de
+              nuestros especialistas.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Search Bar */}
       <div className="mb-6">
         <div className="relative">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">
@@ -81,21 +86,25 @@ export const BlogListPage: React.FC = () => {
             onChange={e => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary"
             placeholder="Buscar artículo..."
+            aria-label="Buscar artículo"
           />
         </div>
       </div>
 
-      {/* Categories Filter */}
       <CategoryFilter
         categories={categories}
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
       />
 
-      {/* Blog Grid */}
-      <BlogGrid blogs={paginatedBlogs} />
+      {loading ? (
+        <LoadingSpinner />
+      ) : error ? (
+        <p className="text-center py-12 text-slate-500">{error}</p>
+      ) : (
+        <BlogGrid blogs={paginatedBlogs} />
+      )}
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
@@ -103,20 +112,6 @@ export const BlogListPage: React.FC = () => {
           onPageChange={setCurrentPage}
         />
       )}
-
-      {/* Newsletter Section */}
-      <div className="mt-20 p-8 md:p-12 bg-primary/5 rounded-3xl border border-primary/10 flex flex-col md:flex-row items-center justify-between gap-10">
-        <div className="max-w-md">
-          <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-slate-100">
-            Suscríbete a nuestra newsletter
-          </h2>
-          <p className="mt-2 text-slate-600 dark:text-slate-400">
-            Recibe consejos exclusivos de salud dental y las últimas promociones directamente en
-            tu bandeja de entrada.
-          </p>
-        </div>
-        <NewsletterForm />
-      </div>
     </main>
   );
 };

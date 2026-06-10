@@ -8,12 +8,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        "primary": "#279df1",
-        "background-light": "#f6f7f8",
-        "background-dark": "#101b22",
+        // Paleta de marca Verboonen (Guía de color)
+        "primary": "#60468E",
+        "secondary": "#75B8C0",
+        "accent": "#477D89",
+        "background-light": "#F0EFF0",
+        "background-dark": "#1d1530",
       },
       fontFamily: {
-        "display": ["Inter", "sans-serif"]
+        "display": ["Montserrat", "sans-serif"]
       },
       borderRadius: {
         "DEFAULT": "0.25rem",
@@ -23,5 +26,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 }

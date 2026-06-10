@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BlogPost } from '../../types';
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 interface BlogCardProps {
   blog: BlogPost;
@@ -9,12 +10,13 @@ interface BlogCardProps {
 
 export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
   return (
-    <Link to={`/blog/${blog.id}`} className="group cursor-pointer">
+    <Link to={`/blog/${blog.slug}`} className="group cursor-pointer">
       <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-6 bg-slate-200">
         <img
-          alt={blog.title}
+          alt={blog.coverImageAlt || blog.title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           src={blog.coverImage}
+          loading="lazy"
         />
       </div>
       <div className="flex gap-2 mb-3">
@@ -23,7 +25,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
         </span>
         {blog.publishedAt && (
           <span className="text-xs text-slate-500">
-            {format(new Date(blog.publishedAt), 'MMM d, yyyy')}
+            {format(new Date(blog.publishedAt), "d 'de' MMMM, yyyy", { locale: es })}
           </span>
         )}
       </div>

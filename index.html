@@ -1,13 +1,43 @@
 <!doctype html>
-<html lang="en" class="light">
+<html lang="es" class="light">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clínica Odontológica Láser Verboonen</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="icon" type="image/png" href="%BASE_URL%favicon.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <meta name="theme-color" content="#60468E" />
+
+    <!-- Línea base para rastreadores que no ejecutan JS; cada ruta la sobreescribe vía react-helmet -->
+    <title>Clínica Odontológica Verboonen | Ortodoncia y Odontología en México</title>
+    <meta name="description" content="Clínica Odontológica Verboonen: ortodoncia, odontología general y pediátrica, ortopedia maxilar y orthokinética. Tu sonrisa en las mejores manos. Agenda tu cita por WhatsApp." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Clínica Odontológica Verboonen" />
+    <meta property="og:title" content="Clínica Odontológica Verboonen" />
+    <meta property="og:description" content="Ortodoncia, odontología general y pediátrica, ortopedia maxilar y orthokinética. Tu sonrisa en las mejores manos." />
+    <!-- URL absoluta: los rastreadores de redes sociales no resuelven rutas relativas.
+         Si se cambia a dominio propio, actualizar también aquí. -->
+    <meta property="og:image" content="https://ia-cross.github.io/clinic_ui_exposed/og-default.jpg" />
+    <meta property="og:locale" content="es_MX" />
+
+    <!-- spa-github-pages: decodifica la URL redirigida desde 404.html -->
+    <script type="text/javascript">
+      (function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&');
+            })
+            .join('?');
+          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+      })(window.location);
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   </head>
   <body>
     <div id="root"></div>

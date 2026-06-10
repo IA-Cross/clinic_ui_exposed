@@ -1,91 +1,68 @@
-# Clínica Odontológica Láser Verboonen
+# Clínica Odontológica Verboonen
 
-A modern React web application for a laser dental clinic, featuring a public website with blog functionality and an admin panel for content management.
+Sitio web de la clínica con blog optimizado para SEO y panel de administración.
+React + Vite + Tailwind en GitHub Pages, con Supabase (plan gratuito) como backend
+y GoatCounter para métricas. **Costo de operación: $0/mes.**
 
-## Features
+➡️ **Puesta en marcha:** ver [SETUP.md](SETUP.md).
 
-### Public Features
-- Modern, responsive homepage with hero section, about section, and latest blog posts
-- Blog listing page with category filtering and search
-- Individual blog post pages with related articles
-- Contact form
-- Newsletter subscription
+## Características
 
-### Admin Features
-- Secure login system
-- Blog management dashboard with statistics
-- Create, edit, publish, and delete blog posts
-- Rich text editor for blog content
-- Draft management system
-- Image upload support (via URL)
-- Category and tag management
-- Quick links management
+### Sitio público (español)
+- Página principal con hero, seis secciones de servicios con carrusel de imágenes,
+  llamada a la acción por WhatsApp y sección de contacto editable por el administrador
+- Blog con búsqueda, filtro por categoría y paginación
+- SEO: URLs amigables (`/blog/mi-articulo`), meta etiquetas y Open Graph por página,
+  datos estructurados schema.org (Dentist, BlogPosting, BreadcrumbList),
+  `sitemap.xml` automático, `robots.txt`, imágenes webp optimizadas
 
-## Tech Stack
+### Panel de administración (`/admin`, oculto)
+- Login con correo/contraseña + **Google Authenticator** (TOTP obligatorio)
+- Métricas reales del sitio y vistas por artículo (GoatCounter)
+- Crear, editar, publicar y eliminar entradas (Markdown con vista previa)
+- Campos SEO por entrada: slug, meta descripción, palabras clave, texto alternativo
+- Subida de imágenes con compresión automática (Supabase Storage)
+- Edición de los datos de la página principal (contacto, horarios, redes)
 
-- **React 18** with TypeScript
-- **Vite** for build tooling
-- **React Router** for navigation
-- **Tailwind CSS** for styling
-- **React Hook Form** for form handling
-- **date-fns** for date formatting
-- **localStorage** for data persistence (can be replaced with backend API)
+## Arquitectura
 
-## Getting Started
+| Pieza | Servicio | Plan |
+|---|---|---|
+| Hosting estático | GitHub Pages | Gratis |
+| Base de datos, login e imágenes | Supabase | Gratis |
+| Métricas | GoatCounter | Gratis |
+| CI/CD + sitemap semanal | GitHub Actions | Gratis |
 
-### Prerequisites
+La clave anónima de Supabase es pública por diseño; la seguridad la imponen las
+políticas RLS (lectura pública solo de contenido publicado; escritura solo con
+sesión verificada por segundo factor).
 
-- Node.js 18+ and npm
+## Desarrollo
 
-### Installation
-
-1. Install dependencies:
 ```bash
+cp .env.example .env   # rellena las variables (ver SETUP.md)
 npm install
+npm run dev            # http://localhost:5173
+npm run build          # genera dist/ + sitemap.xml
+npm run lint
 ```
 
-2. Start the development server:
-```bash
-npm run dev
-```
+El deploy es automático en cada push a `main` (workflow `deploy.yml`).
 
-3. Open your browser and navigate to `http://localhost:5173`
-
-### Building for Production
-
-```bash
-npm run build
-```
-
-The built files will be in the `dist` directory.
-
-## Project Structure
+## Estructura
 
 ```
 src/
-├── components/       # Reusable React components
-│   ├── common/      # Common components (Header, Footer, Button, etc.)
-│   ├── blog/        # Blog-related components
-│   ├── admin/       # Admin panel components
-│   └── forms/       # Form components
-├── pages/           # Page components
-├── context/         # React Context providers (Auth, Blog)
-├── types/           # TypeScript type definitions
-└── utils/           # Utility functions
+├── components/      # common/, blog/, admin/, forms/, home/
+├── pages/           # Páginas públicas y de administración
+├── context/         # Auth (Supabase + MFA), Blog, Settings
+├── lib/             # Clientes: supabase, postsApi, settingsApi, goatcounter, uploadImage
+├── data/            # services.ts (6 secciones), defaultSettings.ts
+├── hooks/           # usePageTracking (GoatCounter SPA)
+├── config/          # site.ts (URL canónica, nombre del sitio)
+└── utils/           # slugify
+scripts/             # optimize-images.mjs, generate-sitemap.mjs
+supabase/            # schema.sql (tablas + RLS), seed.sql
 ```
 
-## Admin Access
-
-For demo purposes, any username and password will work for admin login. In production, this should be replaced with proper authentication.
-
-## Data Persistence
-
-Currently, the application uses `localStorage` to persist blog posts and authentication state. This allows the app to work immediately without a backend. To connect to a backend API:
-
-1. Replace `src/utils/storage.ts` functions with API calls
-2. Update `src/context/BlogContext.tsx` to use API endpoints
-3. Update `src/context/AuthContext.tsx` for proper authentication
-
-## License
-
-© 2023 Clínica Odontológica Láser Verboonen. All rights reserved.
+© Clínica Odontológica Verboonen. Todos los derechos reservados.

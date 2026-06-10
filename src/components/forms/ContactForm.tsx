@@ -1,120 +1,95 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../common/Button';
+import { useSettings } from '../../context/SettingsContext';
+import { services } from '../../data/services';
 
 interface ContactFormData {
   name: string;
-  email: string;
   service: string;
   message: string;
 }
 
+// Sin backend: el formulario arma un mensaje y abre WhatsApp con él.
 export const ContactForm: React.FC = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const { settings } = useSettings();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<ContactFormData>();
 
-  const onSubmit = async (data: ContactFormData) => {
-    setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Contact form submitted:', data);
-    setSubmitSuccess(true);
-    setIsSubmitting(false);
-    reset();
-    setTimeout(() => setSubmitSuccess(false), 3000);
+  const onSubmit = (data: ContactFormData) => {
+    const text = [
+      `Hola, soy ${data.name}.`,
+      `Me interesa: ${data.service}.`,
+      data.message,
+    ].join('\n');
+    window.open(
+      `https://wa.me/${settings.contact.whatsapp}?text=${encodeURIComponent(text)}`,
+      '_blank',
+      'noopener',
+    );
   };
 
   return (
     <div className="bg-background-light dark:bg-background-dark p-8 lg:p-12 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700 dark:text-slate-300">
-              Full Name
-            </label>
-            <input
-              {...register('name', { required: 'Name is required' })}
-              className="w-full px-4 py-3 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-              placeholder="John Doe"
-              type="text"
-            />
-            {errors.name && (
-              <p className="text-xs text-red-500">{errors.name.message}</p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700 dark:text-slate-300">
-              Email Address
-            </label>
-            <input
-              {...register('email', {
-                required: 'Email is required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address',
-                },
-              })}
-              className="w-full px-4 py-3 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-              placeholder="john@example.com"
-              type="email"
-            />
-            {errors.email && (
-              <p className="text-xs text-red-500">{errors.email.message}</p>
-            )}
-          </div>
+        <div className="space-y-2">
+          <label htmlFor="contact-name" className="text-sm font-bold text-slate-700 dark:text-slate-300">
+            Nombre completo
+          </label>
+          <input
+            id="contact-name"
+            {...register('name', { required: 'Escribe tu nombre' })}
+            className="w-full px-4 py-3 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+            placeholder="Tu nombre"
+            type="text"
+          />
+          {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-bold text-slate-700 dark:text-slate-300">
-            Service Interested In
+          <label htmlFor="contact-service" className="text-sm font-bold text-slate-700 dark:text-slate-300">
+            Servicio de interés
           </label>
           <select
-            {...register('service', { required: 'Please select a service' })}
+            id="contact-service"
+            {...register('service', { required: 'Selecciona un servicio' })}
             className="w-full px-4 py-3 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
           >
-            <option value="">Select a service</option>
-            <option value="general">General Checkup</option>
-            <option value="whitening">Laser Teeth Whitening</option>
-            <option value="implants">Dental Implants</option>
-            <option value="orthodontics">Orthodontics</option>
+            <option value="">Selecciona un servicio</option>
+            {services.map((s) => (
+              <option key={s.id} value={s.title}>
+                {s.title}
+              </option>
+            ))}
+            <option value="Otro">Otro</option>
           </select>
-          {errors.service && (
-            <p className="text-xs text-red-500">{errors.service.message}</p>
-          )}
+          {errors.service && <p className="text-xs text-red-500">{errors.service.message}</p>}
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-bold text-slate-700 dark:text-slate-300">
-            Your Message
+          <label htmlFor="contact-message" className="text-sm font-bold text-slate-700 dark:text-slate-300">
+            Mensaje
           </label>
           <textarea
-            {...register('message', { required: 'Message is required' })}
+            id="contact-message"
+            {...register('message', { required: 'Cuéntanos en qué podemos ayudarte' })}
             className="w-full px-4 py-3 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-            placeholder="Tell us how we can help..."
+            placeholder="Cuéntanos en qué podemos ayudarte..."
             rows={4}
           />
-          {errors.message && (
-            <p className="text-xs text-red-500">{errors.message.message}</p>
-          )}
+          {errors.message && <p className="text-xs text-red-500">{errors.message.message}</p>}
         </div>
-        {submitSuccess && (
-          <div className="p-4 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 rounded-lg">
-            Thank you! Your message has been sent successfully.
-          </div>
-        )}
-        <Button
-          type="submit"
-          variant="primary"
-          className="w-full"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? 'Sending...' : 'Send Message'}
+        <Button type="submit" variant="primary" className="w-full">
+          <span className="inline-flex items-center gap-2">
+            <span className="material-symbols-outlined text-base">chat</span>
+            Enviar por WhatsApp
+          </span>
         </Button>
+        <p className="text-xs text-slate-500 text-center">
+          Se abrirá WhatsApp con tu mensaje listo para enviar.
+        </p>
       </form>
     </div>
   );
