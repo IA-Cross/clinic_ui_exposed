@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export const AdminHeader: React.FC = () => {
-  const { session, logout } = useAuth();
+  const { session, logout, isDemoMode } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -17,6 +17,14 @@ export const AdminHeader: React.FC = () => {
         Clínica Odontológica Verboonen
       </h2>
       <div className="flex items-center gap-4">
+        {isDemoMode && (
+          <span
+            className="text-xs font-bold bg-amber-100 text-amber-800 px-3 py-1.5 rounded-full"
+            title="Ejecutando sin Supabase: los cambios viven solo en memoria y se pierden al recargar"
+          >
+            Modo demo local
+          </span>
+        )}
         <span className="text-sm text-slate-600 dark:text-slate-400 hidden sm:block">
           {session?.user.email}
         </span>

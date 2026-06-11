@@ -1,5 +1,9 @@
-import { supabase } from './supabase';
+import { supabase, isDevMock } from './supabase';
+import { mockPosts } from '../data/mockPosts';
 import type { BlogPost } from '../types';
+
+// ----- Modo demostración local (npm run dev sin .env): datos en memoria -----
+let memory: BlogPost[] = isDevMock ? [...mockPosts] : [];
 
 // Fila en Postgres (snake_case) ↔ BlogPost (camelCase)
 interface PostRow {
@@ -66,6 +70,7 @@ const COLUMNS =
 // RLS decide qué ve cada quien: el público solo lo publicado;
 // el admin autenticado también los borradores.
 export async function fetchAllPosts(): Promise<BlogPost[]> {
+  if (isDevMock) return [...memory];
   const { data, error } = await supabase
     .from('posts')
     .select(COLUMNS)
@@ -75,6 +80,7 @@ export async function fetchAllPosts(): Promise<BlogPost[]> {
 }
 
 export async function fetchPostBySlug(slug: string): Promise<BlogPost | null> {
+  if (isDevMock) return memory.find((p) => p.slug === slug) ?? null;
   const { data, error } = await supabase
     .from('posts')
     .select(COLUMNS)
@@ -85,6 +91,7 @@ export async function fetchPostBySlug(slug: string): Promise<BlogPost | null> {
 }
 
 export async function isSlugTaken(slug: string, excludeId?: string): Promise<boolean> {
+  if (isDevMock) return memory.some((p) => p.slug === slug && p.id !== excludeId);
   let query = supabase.from('posts').select('id').eq('slug', slug);
   if (excludeId) query = query.neq('id', excludeId);
   const { data, error } = await query;
@@ -95,6 +102,12 @@ export async function isSlugTaken(slug: string, excludeId?: string): Promise<boo
 export async function createPost(
   post: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>,
 ): Promise<BlogPost> {
+  if (isDevMock) {
+    const now = new Date().toISOString();
+    const created: BlogPost = { ...post, id: `mock-${Date.now()}`, createdAt: now, updatedAt: now };
+    memory = [created, ...memory];
+    return created;
+  }
   const { data, error } = await supabase
     .from('posts')
     .insert(toRow(post))
@@ -105,6 +118,12 @@ export async function createPost(
 }
 
 export async function updatePost(id: string, updates: Partial<BlogPost>): Promise<BlogPost> {
+  if (isDevMock) {
+    memory = memory.map((p) =>
+      p.id === id ? { ...p, ...updates, updatedAt: new Date().toISOString() } : p,
+    );
+    return memory.find((p) => p.id === id)!;
+  }
   const { data, error } = await supabase
     .from('posts')
     .update({ ...toRow(updates), updated_at: new Date().toISOString() })
@@ -116,6 +135,10 @@ export async function updatePost(id: string, updates: Partial<BlogPost>): Promis
 }
 
 export async function deletePost(id: string): Promise<void> {
+  if (isDevMock) {
+    memory = memory.filter((p) => p.id !== id);
+    return;
+  }
   const { error } = await supabase.from('posts').delete().eq('id', id);
   if (error) throw error;
 }

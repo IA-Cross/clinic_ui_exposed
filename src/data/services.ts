@@ -34,7 +34,7 @@ export const services: Service[] = [
   {
     id: 'ortodoncia',
     title: 'Ortodoncia',
-    icon: 'orthopedics',
+    icon: 'sentiment_satisfied',
     description:
       'Alineamos tu sonrisa con brackets y alineadores de última generación. Tratamientos personalizados para niños, adolescentes y adultos que mejoran la función y la estética de tu sonrisa.',
     images: [

@@ -20,6 +20,11 @@ Pasos manuales (una sola vez) para dejar el sitio funcionando. Costo total: **$0
 6. En **Authentication → Multi-Factor**: verifica que TOTP esté habilitado (lo está
    por defecto). El QR para Google Authenticator aparece en el primer inicio de
    sesión en `/admin/login` del propio sitio.
+7. En **Authentication → URL Configuration**:
+   - *Site URL*: la URL del sitio (p. ej. `https://ia-cross.github.io/clinic_ui_exposed`)
+   - *Redirect URLs*: agrega `https://<tu-sitio>/admin/reset` (y
+     `http://localhost:5173/clinic_ui_exposed/admin/reset` para pruebas locales).
+   Sin esto, el enlace de "¿Olvidaste tu contraseña?" no podrá volver al sitio.
 
 ## 2. GoatCounter (métricas, gratis y sin aviso de cookies)
 
@@ -74,6 +79,26 @@ y haz commit de los `.webp` generados en `src/assets/`.
    (y `pathSegmentsToKeep = 0` en `public/404.html`).
 3. Da de alta el sitio en [Google Search Console](https://search.google.com/search-console)
    y envía `https://tudominio.com/sitemap.xml`.
+
+## Recuperación de acceso
+
+- **Contraseña olvidada**: en `/admin/login` escribe el correo y pulsa
+  «¿Olvidaste tu contraseña?». Llega un correo cuyo enlace abre `/admin/reset`,
+  donde se define la nueva contraseña (pide también el código de Google
+  Authenticator si ya está configurado).
+- **Teléfono / app de autenticación perdida**: entra al panel de Supabase →
+  **Authentication → Users** → usuario del admin → **Factors** → elimina el factor
+  TOTP. En el siguiente inicio de sesión el sitio mostrará de nuevo el QR para
+  inscribir el nuevo teléfono.
+- **Correo del admin perdido**: el dueño del proyecto Supabase puede cambiar el
+  correo o crear otro usuario desde **Authentication → Users**.
+
+## Probar en local sin nada configurado (modo demo)
+
+`npm run dev` sin `.env` activa un modo demostración: blog con artículos de ejemplo
+y panel accesible con cualquier credencial (sin MFA, cambios solo en memoria).
+Útil para revisar la UI o enseñar el panel sin crear cuentas. Solo existe en
+desarrollo; el build de producción siempre exige Supabase real.
 
 ## Seguridad — resumen
 

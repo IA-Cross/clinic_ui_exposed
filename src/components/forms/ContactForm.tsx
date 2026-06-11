@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../common/Button';
+import { WhatsAppIcon } from '../common/BrandIcons';
 import { useSettings } from '../../context/SettingsContext';
 import { services } from '../../data/services';
 
@@ -82,8 +83,8 @@ export const ContactForm: React.FC = () => {
           {errors.message && <p className="text-xs text-red-500">{errors.message.message}</p>}
         </div>
         <Button type="submit" variant="primary" className="w-full">
-          <span className="inline-flex items-center gap-2">
-            <span className="material-symbols-outlined text-base">chat</span>
+          <span className="inline-flex items-center justify-center gap-2">
+            <WhatsAppIcon />
             Enviar por WhatsApp
           </span>
         </Button>

@@ -37,17 +37,40 @@ La clave anónima de Supabase es pública por diseño; la seguridad la imponen l
 políticas RLS (lectura pública solo de contenido publicado; escritura solo con
 sesión verificada por segundo factor).
 
-## Desarrollo
+## Ejecutar en local
+
+**Opción A — Demo sin backend** (ver toda la UI, incluido el panel de administración):
 
 ```bash
-cp .env.example .env   # rellena las variables (ver SETUP.md)
 npm install
-npm run dev            # http://localhost:5173
-npm run build          # genera dist/ + sitemap.xml
-npm run lint
+npm run dev
+# abre http://localhost:5173/clinic_ui_exposed/
 ```
 
-El deploy es automático en cada push a `main` (workflow `deploy.yml`).
+Sin archivo `.env` el sitio entra en **modo demo local**: el blog muestra artículos
+de ejemplo y en `/admin/login` entra cualquier correo/contraseña (sin MFA, los
+cambios viven en memoria). Este modo solo existe en `npm run dev`, nunca en producción.
+
+**Opción B — Proyecto completo** (datos y login reales):
+
+```bash
+cp .env.example .env   # rellena con tu proyecto de Supabase (ver SETUP.md §1-3)
+npm install
+npm run dev
+```
+
+Otros comandos: `npm run build` (genera `dist/` + `sitemap.xml`), `npm run preview`
+(sirve el build), `npm run lint`.
+
+## Desplegar (GitHub Pages, gratis, automático desde el repo)
+
+1. Sube el repo a GitHub y agrega los 4 secretos en
+   **Settings → Secrets and variables → Actions**:
+   `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_SITE_URL`, `VITE_GOATCOUNTER_CODE`.
+2. Haz push a `main`: el workflow `deploy.yml` compila y publica en la rama `gh-pages`.
+3. La primera vez, en **Settings → Pages** elige *Deploy from a branch* → `gh-pages` → `/ (root)`.
+4. El sitio queda en `https://<usuario>.github.io/<repo>/` y **cada push a `main`
+   se despliega solo**. También puedes desplegar a mano con `npm run deploy`.
 
 ## Estructura
 

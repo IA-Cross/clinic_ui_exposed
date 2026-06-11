@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSettings } from '../../context/SettingsContext';
+import { FacebookIcon, InstagramIcon, TikTokIcon } from './BrandIcons';
 import logoBlanco from '../../assets/brand/logo-blanco.webp';
 
 export const Footer: React.FC = () => {
@@ -8,9 +9,9 @@ export const Footer: React.FC = () => {
   const { contact, social } = settings;
 
   const socialLinks = [
-    { href: social.facebook, label: 'Facebook', icon: 'thumb_up' },
-    { href: social.instagram, label: 'Instagram', icon: 'photo_camera' },
-    { href: social.tiktok, label: 'TikTok', icon: 'music_note' },
+    { href: social.facebook, label: 'Facebook', Icon: FacebookIcon },
+    { href: social.instagram, label: 'Instagram', Icon: InstagramIcon },
+    { href: social.tiktok, label: 'TikTok', Icon: TikTokIcon },
   ].filter((s) => s.href);
 
   return (
@@ -31,16 +32,16 @@ export const Footer: React.FC = () => {
             </p>
             {socialLinks.length > 0 && (
               <div className="flex gap-4">
-                {socialLinks.map((s) => (
+                {socialLinks.map(({ href, label, Icon }) => (
                   <a
-                    key={s.label}
+                    key={label}
                     className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors"
-                    href={s.href}
+                    href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={s.label}
+                    aria-label={label}
                   >
-                    <span className="material-symbols-outlined text-sm">{s.icon}</span>
+                    <Icon className="w-4 h-4" />
                   </a>
                 ))}
               </div>

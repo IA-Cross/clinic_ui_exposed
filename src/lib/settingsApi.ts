@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured } from './supabase';
+import { supabase, isSupabaseConfigured, isDevMock } from './supabase';
 import { defaultSettings } from '../data/defaultSettings';
 import type { SiteSettings } from '../types';
 
@@ -22,6 +22,7 @@ export async function fetchSettings(): Promise<SiteSettings> {
 }
 
 export async function updateSettings(settings: SiteSettings): Promise<void> {
+  if (isDevMock) return; // demo local: el estado en memoria lo conserva el contexto
   const { error } = await supabase
     .from('site_settings')
     .update({ value: settings, updated_at: new Date().toISOString() })

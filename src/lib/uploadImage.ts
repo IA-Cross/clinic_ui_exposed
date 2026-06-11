@@ -1,5 +1,5 @@
 import imageCompression from 'browser-image-compression';
-import { supabase } from './supabase';
+import { supabase, isDevMock } from './supabase';
 import { slugify } from '../utils/slugify';
 
 const BUCKET = 'blog-images';
@@ -13,6 +13,9 @@ export async function uploadImage(file: File): Promise<string> {
     useWebWorker: true,
     fileType: 'image/webp',
   });
+
+  // Demo local: la imagen vive solo en la memoria del navegador
+  if (isDevMock) return URL.createObjectURL(compressed);
 
   const base = slugify(file.name.replace(/\.[^.]+$/, '')) || 'imagen';
   const path = `${Date.now()}-${base}.webp`;

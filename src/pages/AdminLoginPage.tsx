@@ -19,8 +19,10 @@ export const AdminLoginPage: React.FC = () => {
   const [secret, setSecret] = useState('');
   const [factorId, setFactorId] = useState<string | undefined>();
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
-  const { login, startEnrollment, verifyCode, mfaStatus, isAuthenticated } = useAuth();
+  const { login, startEnrollment, verifyCode, requestPasswordReset, mfaStatus, isAuthenticated, isDemoMode } =
+    useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,6 +64,26 @@ export const AdminLoginPage: React.FC = () => {
     // startEnrollment es estable; solo debe dispararse al cambiar mfaStatus
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mfaStatus]);
+
+  const handleForgotPassword = async () => {
+    setError('');
+    setNotice('');
+    if (!email) {
+      setError('Escribe tu correo y vuelve a pulsar "¿Olvidaste tu contraseña?"');
+      return;
+    }
+    setBusy(true);
+    try {
+      await requestPasswordReset(email);
+      setNotice(
+        'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña. Revisa también el spam.',
+      );
+    } catch {
+      setError('No se pudo enviar el correo de recuperación. Intenta más tarde.');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,9 +135,20 @@ export const AdminLoginPage: React.FC = () => {
         </div>
 
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl p-8">
+          {isDemoMode && (
+            <div className="mb-6 p-4 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 rounded-lg text-sm">
+              <strong>Modo demo local</strong> (sin Supabase configurado): entra con
+              cualquier correo y contraseña. Los cambios no se guardan.
+            </div>
+          )}
           {error && (
             <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 rounded-lg">
               {error}
+            </div>
+          )}
+          {notice && (
+            <div className="mb-6 p-4 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 rounded-lg text-sm">
+              {notice}
             </div>
           )}
 
@@ -152,6 +185,16 @@ export const AdminLoginPage: React.FC = () => {
               <Button type="submit" variant="primary" className="w-full" disabled={busy}>
                 {busy ? 'Verificando…' : 'Continuar'}
               </Button>
+              {!isDemoMode && (
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  disabled={busy}
+                  className="w-full text-sm text-primary font-semibold hover:underline"
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
+              )}
             </form>
           )}
 

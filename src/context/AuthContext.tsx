@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import { supabase, isDevMock } from '../lib/supabase';
 
 // Niveles de seguridad de Supabase Auth:
 //  aal1 = solo contraseña · aal2 = contraseña + código TOTP (Google Authenticator)
@@ -20,11 +20,17 @@ interface AuthContextType {
   /** false mientras se resuelve el estado inicial */
   ready: boolean;
   mfaStatus: MfaStatus;
+  /** true en `npm run dev` sin Supabase configurado (login simulado) */
+  isDemoMode: boolean;
   login: (email: string, password: string) => Promise<void>;
   /** Inicia el alta de TOTP; devuelve el QR para escanear */
   startEnrollment: () => Promise<EnrollData>;
   /** Verifica el código de 6 dígitos (alta o reto) */
   verifyCode: (code: string, factorId?: string) => Promise<void>;
+  /** Envía el correo de recuperación de contraseña */
+  requestPasswordReset: (email: string) => Promise<void>;
+  /** Define la nueva contraseña (desde el enlace de recuperación) */
+  updatePassword: (newPassword: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -51,6 +57,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   useEffect(() => {
+    if (isDevMock) {
+      setReady(true);
+      return;
+    }
     supabase.auth
       .getSession()
       .then(async ({ data }) => {
@@ -70,6 +80,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = async (email: string, password: string) => {
+    if (isDevMock) {
+      // Demo local: cualquier credencial entra y se omite el MFA
+      setIsAuthenticated(true);
+      setMfaStatus('verified');
+      return;
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     await evaluateLevel();
@@ -108,8 +124,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setMfaStatus('verified');
   };
 
+  const requestPasswordReset = async (email: string) => {
+    if (isDevMock) return;
+    // El enlace del correo regresa a la página de restablecimiento del sitio
+    const redirectTo = `${window.location.origin}${import.meta.env.BASE_URL}admin/reset`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) throw error;
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    if (isDevMock) return;
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) throw error;
+  };
+
   const logout = async () => {
-    await supabase.auth.signOut();
+    if (!isDevMock) await supabase.auth.signOut();
     setSession(null);
     setIsAuthenticated(false);
     setMfaStatus('unknown');
@@ -117,7 +147,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   return (
     <AuthContext.Provider
-      value={{ session, isAuthenticated, ready, mfaStatus, login, startEnrollment, verifyCode, logout }}
+      value={{
+        session,
+        isAuthenticated,
+        ready,
+        mfaStatus,
+        isDemoMode: isDevMock,
+        login,
+        startEnrollment,
+        verifyCode,
+        requestPasswordReset,
+        updatePassword,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

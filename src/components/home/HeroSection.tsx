@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSettings } from '../../context/SettingsContext';
+import { WhatsAppIcon } from '../common/BrandIcons';
 import heroImg from '../../assets/office/consultorio-1.webp';
 
 export const HeroSection: React.FC = () => {
@@ -30,8 +31,8 @@ export const HeroSection: React.FC = () => {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-6 py-3.5 font-bold text-white hover:brightness-110 transition"
             >
-              <span className="material-symbols-outlined">chat</span>
-              Agenda tu Cita Hoy
+              <WhatsAppIcon />
+              Agenda tu Cita por Chat
             </a>
             <a
               href="#servicios"

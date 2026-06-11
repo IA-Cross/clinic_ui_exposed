@@ -27,6 +27,9 @@ const AdminEditorPage = lazy(() =>
 const AdminSettingsPage = lazy(() =>
   import('./pages/AdminSettingsPage').then((m) => ({ default: m.AdminSettingsPage })),
 );
+const AdminResetPage = lazy(() =>
+  import('./pages/AdminResetPage').then((m) => ({ default: m.AdminResetPage })),
+);
 
 // Desplaza la vista al ancla (#servicios, #contacto) tras navegar
 function ScrollManager() {
@@ -83,6 +86,7 @@ function App() {
 
                 {/* Rutas de administración (no enlazadas desde el sitio público) */}
                 <Route path="/admin/login" element={<AdminLoginPage />} />
+                <Route path="/admin/reset" element={<AdminResetPage />} />
                 <Route
                   path="/admin"
                   element={

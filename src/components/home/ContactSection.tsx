@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSettings } from '../../context/SettingsContext';
+import { WhatsAppIcon } from '../common/BrandIcons';
 import { ContactForm } from '../forms/ContactForm';
 
 export const ContactSection: React.FC = () => {
@@ -52,7 +53,7 @@ export const ContactSection: React.FC = () => {
               </div>
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-[#25D366] text-white rounded-lg flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined">chat</span>
+                  <WhatsAppIcon className="w-6 h-6" />
                 </div>
                 <div>
                   <p className="font-bold text-lg mb-1">WhatsApp</p>
