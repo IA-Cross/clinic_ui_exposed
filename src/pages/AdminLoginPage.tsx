@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { isSupabaseConfigured } from '../lib/supabase';
 import { Button } from '../components/common/Button';
 import { Seo } from '../components/common/Seo';
 import logoColor from '../assets/brand/logo-color.webp';
@@ -139,6 +140,13 @@ export const AdminLoginPage: React.FC = () => {
             <div className="mb-6 p-4 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 rounded-lg text-sm">
               <strong>Modo demo local</strong> (sin Supabase configurado): entra con
               cualquier correo y contraseña. Los cambios no se guardan.
+            </div>
+          )}
+          {!isDemoMode && !isSupabaseConfigured && (
+            <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 rounded-lg text-sm">
+              <strong>Error de configuración:</strong> el sitio se publicó sin las
+              variables de Supabase (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY).
+              Configúralas en GitHub y vuelve a desplegar (SETUP.md §3).
             </div>
           )}
           {error && (

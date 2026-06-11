@@ -33,12 +33,30 @@ jobs:
 
       - run: npm ci
 
+      # Acepta los valores como Secrets o como Variables (pestañas distintas en
+      # Settings → Secrets and variables → Actions), a nivel repositorio o del
+      # environment gh-pages.
+      - name: Verificar variables de entorno
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || vars.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          missing=""
+          [ -z "$VITE_SUPABASE_URL" ] && missing="$missing VITE_SUPABASE_URL"
+          [ -z "$VITE_SUPABASE_ANON_KEY" ] && missing="$missing VITE_SUPABASE_ANON_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error::Faltan en el build:$missing"
+            echo "::error::Créalos en Settings → Secrets and variables → Actions como 'Repository secrets' (o en el environment 'gh-pages'). Sin ellos el login y el blog no funcionan."
+            exit 1
+          fi
+          echo "Variables de Supabase presentes ✓"
+
       - run: npm run build
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_SITE_URL: ${{ secrets.VITE_SITE_URL }}
-          VITE_GOATCOUNTER_CODE: ${{ secrets.VITE_GOATCOUNTER_CODE }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_SITE_URL: ${{ secrets.VITE_SITE_URL || vars.VITE_SITE_URL }}
+          VITE_GOATCOUNTER_CODE: ${{ secrets.VITE_GOATCOUNTER_CODE || vars.VITE_GOATCOUNTER_CODE }}
 
       - name: Publicar en gh-pages
         uses: peaceiris/actions-gh-pages@v4
