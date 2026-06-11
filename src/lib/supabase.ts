@@ -3,7 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 // La clave anónima es pública por diseño: viaja en el bundle y la seguridad
 // real la imponen las políticas RLS en Supabase (lectura pública solo de
 // contenido publicado; escritura solo con sesión + MFA).
-const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+// La URL debe ser la raíz del proyecto (https://xxxx.supabase.co): el cliente
+// añade /auth/v1 y /rest/v1 por su cuenta. Si la variable llegó con ese
+// sufijo pegado (error común al copiarla), se elimina aquí.
+const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined)
+  ?.replace(/\/(rest|auth|storage)\/v1\/?$/, '')
+  .replace(/\/+$/, '');
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
 export const isSupabaseConfigured = Boolean(url && anonKey);

@@ -12,7 +12,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 // `||` y no `??`: en CI un secreto inexistente llega como cadena vacía
 const SITE_URL = (process.env.VITE_SITE_URL || 'https://ia-cross.github.io/clinic_ui_exposed').replace(/\/$/, '');
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
+const SUPABASE_URL = (process.env.VITE_SUPABASE_URL || '')
+  .replace(/\/(rest|auth|storage)\/v1\/?$/, '')
+  .replace(/\/+$/, '');
 const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const staticRoutes = [
