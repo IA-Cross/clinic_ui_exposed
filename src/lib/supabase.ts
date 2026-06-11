@@ -15,6 +15,6 @@ export const isSupabaseConfigured = Boolean(url && anonKey);
 export const isDevMock = import.meta.env.DEV && !isSupabaseConfigured;
 
 export const supabase = createClient(
-  url ?? 'https://placeholder.supabase.co',
-  anonKey ?? 'placeholder-anon-key',
+  url || 'https://placeholder.supabase.co',
+  anonKey || 'placeholder-anon-key',
 );
