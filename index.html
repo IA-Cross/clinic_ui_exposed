@@ -14,26 +14,9 @@
     <meta property="og:site_name" content="Clínica Odontológica Verboonen" />
     <meta property="og:title" content="Clínica Odontológica Verboonen" />
     <meta property="og:description" content="Ortodoncia, odontología general y pediátrica, ortopedia maxilar y orthokinética. Tu sonrisa en las mejores manos." />
-    <!-- URL absoluta: los rastreadores de redes sociales no resuelven rutas relativas.
-         Si se cambia a dominio propio, actualizar también aquí. -->
-    <meta property="og:image" content="https://ia-cross.github.io/clinic_ui_exposed/og-default.jpg" />
+    <!-- URL absoluta: los rastreadores de redes sociales no resuelven rutas relativas. -->
+    <meta property="og:image" content="%VITE_SITE_URL%/og-default.jpg" />
     <meta property="og:locale" content="es_MX" />
-
-    <!-- spa-github-pages: decodifica la URL redirigida desde 404.html -->
-    <script type="text/javascript">
-      (function (l) {
-        if (l.search[1] === '/') {
-          var decoded = l.search
-            .slice(1)
-            .split('&')
-            .map(function (s) {
-              return s.replace(/~and~/g, '&');
-            })
-            .join('?');
-          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
-        }
-      })(window.location);
-    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
